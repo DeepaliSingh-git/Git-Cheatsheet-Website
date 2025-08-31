@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Git & GitHub Cheatsheet</title>
+  <meta name="description" content="A fast, searchable Git & GitHub cheatsheet web app in a single HTML file. Deploy on GitHub Pages."/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🐙</text></svg>">
+
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --panel:#0f1520;
+      --panel-2:#121a26;
+      --text:#e6edf3;
+      --muted:#94a3b8;
+      --brand:#7c3aed;
+      --brand-2:#22d3ee;
+      --accent:#111827;
+      --ring:#334155;
+      --code:#0a0f14;
+      --ok:#10b981;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --pill-text: #1e89d5e7; 
+    }
+    :root.light{
+      --bg:#f8fafc; --panel:#ffffff; --panel-2:#f1f5f9; --text:#0f172a; --muted:#475569; --brand:#7c3aed; --brand-2:#0891b2; --accent:#e2e8f0; --ring:#cbd5e1; --code:#0b1020; --ok:#059669; --warn:#b45309; --danger:#b91c1c;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial; background:var(--bg); color:var(--text);}
+    a{color:inherit}
+    .container{max-width:1100px;margin:0 auto;padding:24px}
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(var(--panel),var(--panel));border-bottom:1px solid var(--ring)}
+    .nav{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:14px 24px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;color:white;font-weight:800}
+    .brand h1{font-size:18px;margin:0}
+    .tools{display:flex;gap:10px;align-items:center}
+    .btn{border:1px solid var(--ring); background:var(--panel-2);color:var(--text); padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:600}
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:translateY(1px)}
+    .btn.ghost{background:transparent}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:var(--accent); border:1px solid var(--ring); padding:2px 6px; border-radius:6px}
+    .searchbar{margin:18px 0 8px; display:flex; gap:10px; align-items:center}
+    .search{flex:1; background:var(--panel); border:1px solid var(--ring); padding:12px 14px; border-radius:12px; color:var(--text); outline:none}
+    .pillbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+    .pill{padding:8px 12px;border:1px solid var(--ring);border-radius:999px;background:var(--panel-2);cursor:pointer;font-weight:600;color: var(--pill-text);}
+    .pill.active{outline:2px solid var(--brand-2);}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{grid-column:span 12;background:var(--panel); border:1px solid var(--ring); border-radius:16px; overflow:hidden}
+    @media(min-width:860px){.card{grid-column:span 6}}
+    .card header{position:unset;background:none;border:0}
+    .card .head{display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid var(--ring)}
+    .card h2{font-size:16px;margin:0}
+    details{border-top:1px dashed var(--ring)}
+    summary{list-style:none; cursor:pointer; padding:14px 16px; font-weight:700}
+    summary::marker, summary::-webkit-details-marker{display:none}
+    .desc{padding:0 16px 14px; color:var(--muted)}
+    pre{margin:0; overflow:auto; background:var(--code); color:#e2e8f0; padding:14px 16px; border-top:1px solid var(--ring)}
+    code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:13px}
+    .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .meta{color:var(--muted); font-size:12px}
+    .copy{margin-left:auto}
+    .muted{color:var(--muted)}
+    .footer{margin:36px 0 64px; color:var(--muted); text-align:center}
+    .kbdrow{display:flex;gap:10px;align-items:center}
+    .invis{position:absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px)}
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="brand" aria-label="Brand">
+       <div class="logo" aria-hidden="true">DS</div>
+        <div>
+         <h1>Git & GitHub Cheatsheet</h1>
+        <div class="meta">by Deepali Singh ✨</div>
+       </div>
+      </div>
+
+      <div class="tools">
+        <button class="btn" id="toggleTheme" title="Toggle theme (T)">🌗 Theme</button>
+        <button class="btn" id="printBtn" title="Print / Save as PDF (Ctrl/Cmd+P)">🖨️ Export PDF</button>
+        <a class="btn ghost" id="starLink" target="_blank" rel="noopener">⭐ Star Template</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section aria-labelledby="search-label">
+      <label id="search-label" class="invis">Search commands</label>
+      <div class="searchbar">
+        <input id="search" class="search" placeholder="Search: init, branch, revert, pull request, .gitignore, actions… (Press / to focus)" />
+        <span class="muted">Tip: press <span class="kbd">/</span> to search</span>
+      </div>
+      <div class="pillbar" id="pillbar"></div>
+      <div class="meta" id="resultCount"></div>
+    </section>
+
+    <section class="grid" id="cards"></section>
+
+    <section class="footer">
+      Built as a single file. Fork it, add your notes, and deploy with GitHub Pages (Settings → Pages). Made with ❤️.
+    </section>
+  </main>
+
+  <template id="cardTpl">
+    <article class="card" data-category="">
+      <div class="head">
+        <h2></h2>
+        <div class="meta"></div>
+      </div>
+      <div class="body"></div>
+    </article>
+  </template>
+
+  <template id="detailTpl">
+    <details>
+      <summary></summary>
+      <div class="desc"></div>
+      <pre><code class="code"></code></pre>
+      <div class="row" style="padding:12px 16px">
+        <button class="btn copy">📋 Copy</button>
+        <span class="meta path"></span>
+      </div>
+    </details>
+  </template>
+
+  <script>
+    // ===== Data =====
+    // Each section has many items. Add/modify freely. Minimal but exam-ready.
+    const SECTIONS = [
+      {
+        title: "Basics",
+        tag: "basics",
+        items: [
+          { q: "Create repo", a: "Start a new repository in current folder", cmd: "git init", path: "repo/.git" },
+          { q: "Clone", a: "Copy an existing remote repository", cmd: "git clone <url>", path: "./project" },
+          { q: "Status", a: "What changed?", cmd: "git status" },
+          { q: "Help", a: "Get help on a command", cmd: "git help <command>\n# or\ngit <command> -h" },
+        ]
+      },
+      {
+        title: "Configure",
+        tag: "config",
+        items: [
+          { q: "Set name/email", a: "Identity for all repos (omit --global for only this repo)", cmd: "git config --global user.name \"Your Name\"\ngit config --global user.email you@example.com" },
+          { q: "Default branch", a: "Set default branch name", cmd: "git config --global init.defaultBranch main" },
+          { q: "List config", a: "View all config from all levels", cmd: "git config --list --show-origin" },
+        ]
+      },
+      {
+        title: "Stage & Commit",
+        tag: "commit",
+        items: [
+          { q: "Stage files", a: "Add files to next commit", cmd: "git add <file|dir>\n# all tracked & untracked\ngit add -A" },
+          { q: "Unstage", a: "Remove from staging area", cmd: "git restore --staged <path>\n# old: git reset <path>" },
+          { q: "Commit", a: "Create a snapshot with a message", cmd: "git commit -m \"message\"" },
+          { q: "Amend", a: "Edit last commit (message + staged changes)", cmd: "git commit --amend" },
+        ]
+      },
+      {
+        title: "Branching",
+        tag: "branch",
+        items: [
+          { q: "List branches", a: "Show local branches (add -r for remote)", cmd: "git branch\n# with last commit\ngit branch -vv" },
+          { q: "Create & switch", a: "Create a new branch and switch", cmd: "git switch -c feature/login\n# or\ngit checkout -b feature/login" },
+          { q: "Switch", a: "Move between branches", cmd: "git switch main\n# or\ngit checkout main" },
+          { q: "Delete branch", a: "Delete local branch (-D to force)", cmd: "git branch -d feature/login" },
+        ]
+      },
+      {
+        title: "Merge & Rebase",
+        tag: "merge",
+        items: [
+          { q: "Merge", a: "Bring another branch into current", cmd: "git merge feature/login" },
+          { q: "Rebase", a: "Replay commits onto another base", cmd: "git rebase main" },
+          { q: "Abort rebase/merge", a: "Back out of an in-progress operation", cmd: "git rebase --abort\n# or\ngit merge --abort" },
+          { q: "Resolve conflicts", a: "After fixing files, mark resolved", cmd: "git add <paths>\ngit commit" },
+        ]
+      },
+      {
+        title: "Remote & Sync",
+        tag: "remote",
+        items: [
+          { q: "Add remote", a: "Connect to GitHub repo", cmd: "git remote add origin https://github.com/user/repo.git" },
+          { q: "Change URL", a: "Update remote URL", cmd: "git remote set-url origin <new-url>" },
+          { q: "Verify remotes", a: "List remotes and URLs", cmd: "git remote -v" },
+          { q: "Push", a: "Upload local branch & set upstream", cmd: "git push -u origin main" },
+          { q: "Pull", a: "Fetch + merge tracked branch", cmd: "git pull" },
+          { q: "Fetch", a: "Download without merging", cmd: "git fetch --all --prune" },
+        ]
+      },
+      {
+        title: "Undo / Fix",
+        tag: "undo",
+        items: [
+          { q: "Discard local changes", a: "Revert unstaged changes in file", cmd: "git restore <path>" },
+          { q: "Restore file to commit", a: "Bring file back from another commit", cmd: "git restore --source=<commit> <path>" },
+          { q: "Reset branch (soft)", a: "Move HEAD, keep staged files", cmd: "git reset --soft <commit>" },
+          { q: "Reset (mixed)", a: "Move HEAD, unstage files (default)", cmd: "git reset <commit>" },
+          { q: "Reset (hard)", a: "Move HEAD and overwrite working tree", cmd: "git reset --hard <commit>" },
+          { q: "Revert commit", a: "Create a new commit that undoes <commit>", cmd: "git revert <commit>" },
+        ]
+      },
+      {
+        title: "Stash",
+        tag: "stash",
+        items: [
+          { q: "Save stash", a: "Save dirty state for later", cmd: "git stash push -m 'wip: login'" },
+          { q: "List stashes", a: "Show saved stashes", cmd: "git stash list" },
+          { q: "Apply / Pop", a: "Reapply (keep) or pop (apply + drop)", cmd: "git stash apply stash@{0}\n# or\ngit stash pop" },
+          { q: "Drop", a: "Delete a specific stash", cmd: "git stash drop stash@{1}" },
+        ]
+      },
+      {
+        title: "Inspect & Diff",
+        tag: "inspect",
+        items: [
+          { q: "Log", a: "History graph (pretty)", cmd: "git log --oneline --graph --decorate --all" },
+          { q: "Show commit", a: "See a specific commit's changes", cmd: "git show <commit>" },
+          { q: "Diff working", a: "Changes not staged", cmd: "git diff" },
+          { q: "Diff staged", a: "Changes that will be committed", cmd: "git diff --staged" },
+          { q: "Blame", a: "Who changed each line", cmd: "git blame <file>" },
+        ]
+      },
+      {
+        title: "Tags & Releases",
+        tag: "tag",
+        items: [
+          { q: "Lightweight tag", a: "Name a commit", cmd: "git tag v1.0.0" },
+          { q: "Annotated tag", a: "With message/metadata", cmd: "git tag -a v1.0.0 -m 'First release'" },
+          { q: "Push tags", a: "Upload all tags", cmd: "git push --tags" },
+          { q: "Delete tag", a: "Local & remote delete", cmd: "git tag -d v1.0.0\n# remote\ngit push origin :refs/tags/v1.0.0" },
+        ]
+      },
+      {
+        title: ".gitignore",
+        tag: "ignore",
+        items: [
+          { q: "Common patterns", a: "Ignore files/folders", cmd: "# Ignore node_modules\nnode_modules/\n# OS junk\n.DS_Store\nThumbs.db\n# Envs\n.env\n*.log\n# Builds\ndist/\nbuild/", path: ".gitignore" },
+          { q: "Already tracked", a: "Stop tracking but keep file", cmd: "git rm --cached <file>\necho '<file>' >> .gitignore" },
+        ]
+      },
+      {
+        title: "GitHub Collaboration",
+        tag: "github",
+        items: [
+          { q: "Fork & clone", a: "Copy someone else's repo (your account)", cmd: "# On GitHub: Fork → then\ngit clone https://github.com/<you>/<repo>.git" },
+          { q: "Upstream remote", a: "Track original repo to sync updates", cmd: "git remote add upstream https://github.com/<owner>/<repo>.git\ngit fetch upstream\ngit merge upstream/main" },
+          { q: "Pull Request", a: "Push branch then open PR on GitHub", cmd: "git push -u origin feature/login\n# On GitHub: Compare & pull request" },
+          { q: "Code review", a: "Request review, address comments, update branch", cmd: "git push\n# GitHub shows updates on the PR" },
+        ]
+      },
+      {
+        title: "GitHub Actions (CI)",
+        tag: "actions",
+        items: [
+          { q: "Node CI example", a: "Run tests on push & PR", cmd: "# .github/workflows/ci.yml\nname: CI\non: [push, pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '20' }\n      - run: npm ci\n      - run: npm test", path: ".github/workflows/ci.yml" },
+          { q: "Pages deploy", a: "Static site to GitHub Pages", cmd: "# Settings → Pages → Deploy from branch (main /root)\n# Or use actions/deploy-pages" },
+        ]
+      },
+      {
+        title: "Safety Notes",
+        tag: "safety",
+        items: [
+          { q: "Never hardcode secrets", a: "Use env vars / GitHub Secrets", cmd: "# Bad: committing API keys\n# Good: Settings → Secrets → Actions" },
+          { q: "Undo pushed secret", a: "Rotate key; force-purge history", cmd: "# 1) Rotate/disable leaked key\n# 2) Purge from commit history (git filter-repo or BFG)\n# 3) Force push & invalidate caches" },
+        ]
+      },
+      {
+        title: "Advanced",
+        tag: "advanced",
+        items: [
+            { q: "Submodules", a: "Embed another repo at a path", cmd: "git submodule add <url> path/\\ngit submodule update --init --recursive" },
+            { q: "Worktrees", a: "Multiple working dirs for one repo", cmd: "git worktree add ../other-branch branch-name\\ngit worktree list" },
+            { q: "Signed commits", a: "Sign commits with GPG or SSH key", cmd: "git commit -S -m 'signed commit'" },
+            { q: "Filter repo", a: "Rewrite history to remove secrets / large files", cmd: "git filter-repo --path <file> --invert-paths" },
+        ]
+      }
+
+    ];
+
+    // ===== DOM helpers =====
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+
+    // ===== Render =====
+    function render(){
+      const cards = $('#cards');
+      cards.innerHTML = '';
+      const cardTpl = $('#cardTpl');
+      const detailTpl = $('#detailTpl');
+
+      const query = $('#search').value.trim().toLowerCase();
+      const activeTag = document.querySelector('.pill.active')?.dataset.tag || 'all';
+      let total = 0;
+
+      SECTIONS.forEach(section => {
+        // Filter by tag
+        if(activeTag !== 'all' && section.tag !== activeTag) return;
+
+        const card = cardTpl.content.firstElementChild.cloneNode(true);
+        card.dataset.category = section.tag;
+        card.querySelector('h2').textContent = section.title;
+        card.querySelector('.meta').textContent = `${section.items.length} items`;
+        const body = card.querySelector('.body');
+
+        section.items.forEach(item => {
+          const hay = (section.title + ' ' + item.q + ' ' + item.a + ' ' + (item.cmd||'')).toLowerCase();
+          if(query && !hay.includes(query)) return;
+          total++;
+
+          const detail = detailTpl.content.firstElementChild.cloneNode(true);
+          detail.querySelector('summary').textContent = item.q;
+          detail.querySelector('.desc').textContent = item.a;
+          detail.querySelector('.code').textContent = item.cmd || '';
+          if(item.path){ detail.querySelector('.path').textContent = `Suggested file: ${item.path}`; }
+
+          // Copy handler
+          detail.querySelector('.copy').addEventListener('click', async (e) => {
+            try{
+              await navigator.clipboard.writeText(item.cmd || '');
+              e.target.textContent = '✅ Copied';
+              setTimeout(()=> e.target.textContent = '📋 Copy', 1200);
+            }catch(err){
+              e.target.textContent = '❌ Copy failed';
+              setTimeout(()=> e.target.textContent = '📋 Copy', 1400);
+            }
+          });
+
+          body.appendChild(detail);
+        });
+
+        // Only append card if it has visible details
+        if(body.children.length){ cards.appendChild(card); }
+      });
+
+      $('#resultCount').textContent = `${total} result${total===1?'':'s'}${query?` for "${query}"`:''}`;
+    }
+
+    // ===== Pills (category filter) =====
+    function buildPills(){
+      const bar = $('#pillbar');
+      const tags = [{label:'All', tag:'all'}].concat(SECTIONS.map(s=>({label:s.title, tag:s.tag})));
+      tags.forEach((t,i)=>{
+        const b = document.createElement('button');
+        b.className = 'pill' + (i===0 ? ' active':'');
+        b.dataset.tag = t.tag;
+        b.textContent = t.label;
+        b.addEventListener('click', () => {
+          $$('.pill').forEach(p=>p.classList.remove('active'));
+          b.classList.add('active');
+          render();
+        });
+        bar.appendChild(b);
+      });
+    }
+
+    // ===== Theme =====
+    function applyTheme(){
+      const theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.classList.toggle('light', theme==='light');
+    }
+    function toggleTheme(){
+      const isLight = document.documentElement.classList.contains('light');
+      localStorage.setItem('theme', isLight? 'dark':'light');
+      applyTheme();
+    }
+
+    // ===== Shortcuts & wiring =====
+    function wire(){
+      $('#toggleTheme').addEventListener('click', toggleTheme);
+      $('#printBtn').addEventListener('click', ()=> window.print());
+      $('#search').addEventListener('input', render);
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === '/'){ e.preventDefault(); $('#search').focus(); }
+        if(e.key.toLowerCase() === 't'){ toggleTheme(); }
+      });
+      // Link to star (replace with your repo URL after you publish)
+      const link = $('#starLink');
+      link.href = 'https://github.com/new';
+      link.addEventListener('click', ()=>{
+        if(link.href === 'https://github.com/new'){
+          alert('After you publish this cheatsheet, set this button link to your repo to collect stars!');
+        }
+      })
+    }
+
+    // ===== Init =====
+    buildPills();
+    applyTheme();
+    render();
+    wire();
+  </script>
+</body>
+</html>
